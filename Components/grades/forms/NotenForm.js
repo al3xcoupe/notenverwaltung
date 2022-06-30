@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {View, Text, TextInput, StyleSheet} from "react-native";
+import {View, Text, TextInput, StyleSheet, Button} from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
 
 export default function NotenForm() {
@@ -55,7 +55,7 @@ export default function NotenForm() {
 
                 />
             </View>
-            <View>
+            <View style={{marginTop: openSemester ? semesters.length * 40 : 0}}>
                 <Text>Note:</Text>
                 <TextInput
                     style={styles.input}
@@ -81,6 +81,14 @@ export default function NotenForm() {
                     placeholder={"Gewichtung (Standart: 1.0)"}
                 />
             </View>
+            <View>
+                <Button
+                    title='Semester speichern'
+                    color="#841584"
+                    accessibilityLabel="Learn more about this purple button"
+                />
+            </View>
+
         </View>
     )
 }

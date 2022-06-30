@@ -4,8 +4,9 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import {Text, View} from "react-native";
 import HomeScreen from "./HomeScreen";
-import NotenForm from "./Components/grades/NotenForm";
 import Setting from "./Components/other/Settings";
+import NotenForm from "./Components/grades/forms/NotenForm";
+import Create from "./Components/grades/forms/Create";
 
 
 const Stack = createNativeStackNavigator();
@@ -29,6 +30,11 @@ const App = () => {
                 name="addNote"
                 component={NotenForm}
                 options={{ title: 'Note erfassen',  headerTitleAlign: "center" }}
+            />
+            <Stack.Screen
+                name="Create"
+                component={Create}
+                options={{ title: 'Erstellen',  headerTitleAlign: "center" }}
             />
         </Stack.Navigator>
       </NavigationContainer>
