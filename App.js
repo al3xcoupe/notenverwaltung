@@ -4,7 +4,8 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import {Text, View} from "react-native";
 import HomeScreen from "./HomeScreen";
-import NotenForm from "./Components/Noten/NotenForm";
+import NotenForm from "./Components/grades/NotenForm";
+import Setting from "./Components/other/Settings";
 
 
 const Stack = createNativeStackNavigator();
@@ -17,8 +18,13 @@ const App = () => {
           <Stack.Screen
               name="Home"
               component={HomeScreen}
-              options={{ title: 'Notenverwaltung',  headerTitleAlign: "center" }}
+              options={{ title: 'Notenverwaltung' }}
           />
+            <Stack.Screen
+                name="Setting"
+                component={Setting}
+            />
+
             <Stack.Screen
                 name="addNote"
                 component={NotenForm}
