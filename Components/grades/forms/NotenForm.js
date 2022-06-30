@@ -60,7 +60,7 @@ export default function NotenForm() {
                 <TextInput
                     style={styles.input}
                     onChangeText={input => {
-                        if(mark >= 1 && mark <=6) {
+                        if((input >= 1 && input <=6) || input === '') {
                             setMark(input)
                         }
                     }}
@@ -74,9 +74,9 @@ export default function NotenForm() {
                 <TextInput
                     style={styles.input}
                     onChangeText={input => {
-                        setMark(input)
+                        setWeight(input)
                     }}
-                    value={mark}
+                    value={weight}
                     keyboardType={"numeric"}
                     placeholder={"Gewichtung (Standart: 1.0)"}
                 />
