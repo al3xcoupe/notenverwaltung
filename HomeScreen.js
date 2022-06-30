@@ -3,12 +3,17 @@ import {Button, FlatList, SafeAreaView, StyleSheet, Text, View} from "react-nati
 const DATA = [
     {
         id: '1',
+        title: 'Erstellen',
+        link: '',
+    },
+    {
+        id: '2',
         title: 'Note erfassen',
         link: 'addNote',
     },
     {
         id: '2',
-        title: 'Überblick der Noten',
+        title: 'Überblick',
         link: 'Evaluation',
     },
     {
