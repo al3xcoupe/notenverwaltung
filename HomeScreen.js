@@ -4,7 +4,7 @@ const DATA = [
     {
         id: '1',
         title: 'Note erfassen',
-        link: 'Eingabe',
+        link: 'addNote',
     },
     {
         id: '2',
