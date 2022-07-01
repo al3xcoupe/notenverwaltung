@@ -13,18 +13,18 @@ import {getToday} from 'react-native-modern-datepicker';
 import mime from "react-native-mime-types";
 import * as FileSystem from "expo-file-system/build/FileSystem";
 import * as pathe from "path";
+import {getItem} from "../../storage/observableStorageService";
 
 export default function NotenForm() {
     const [title, setTitle] = useState();
 
-    const [subjects, setSubjects] = useState([{label: "Mathematik", value: "m"}]) //später mit UseEffect aus Storage fächer hollen
+    const [subjects, setSubjects] = useState([{label: "Mathematik", value: "m"}])
     const [subject, setSubject] = useState(null);
     const [openSubject, setOpenSubject] = useState(false);
 
-    const [semesters, setSemesters] = useState([{label: "BMS 21/22", value: "bms21/22"}]) //später mit UseEffect aus Storage fächer hollen
+    const [semesters, setSemesters] = useState([{label: "BMS 21/22", value: "bms21/22"}])
     const [semester, setSemester] = useState(null);
     const [openSemester, setOpenSemester] = useState(false);
-    const [counter, setCounter] = useState(0);
 
     const [mark, setMark] = useState(null);
     const [weight, setWeight] = useState('');
@@ -36,13 +36,18 @@ export default function NotenForm() {
     const [image, setImage] = useState(null);
     const [status, requestPermission] = ImagePicker.useCameraPermissions();
 
+    const [isEnabled1, setIsEnabled1] = useState(false);
+    const [isEnabled2, setIsEnabled2] = useState(false);
 
     useEffect(() => {
         getSemester(mapSemesters)
         getSubject(mapSubjects)
 
+        getItem("@RoundNumber", callback1)
+        getItem("@OnlyWholeNumber", callback2)
+
         registerObserver(firebasePathes.semester, "noteFormSemester", (data) => {
-            console.log("Form Data:" + counter)
+
         })
 
 
@@ -53,6 +58,13 @@ export default function NotenForm() {
         changeSubjects()
     }, semester)
 
+    const callback1 = (value) => {
+        setIsEnabled1(value);
+    }
+
+    const callback2 = (value) => {
+        setIsEnabled2(value);
+    }
 
     const mapSubjects = (data) => {
         setSubjects(data.map(semi => {
@@ -94,10 +106,12 @@ export default function NotenForm() {
         const res = await FileSystem.readAsStringAsync(uri, {encoding: FileSystem.EncodingType.Base64});
         const base64String = "data:" + mimeType + ";base64," + res;
 
+        let finalWeight = weight === '' ? 1 : weight;
+
         const markToAdd = {
             title,
             mark,
-            weight,
+            finalWeight,
             selectedDate,
             subject,
             semester,
@@ -194,8 +208,18 @@ export default function NotenForm() {
                     <TextInput
                         style={styles.input}
                         onChangeText={input => {
-                            if ((input >= 1 && input <= 6) || input === '') {
-                                setMark(input)
+                            if(isEnabled2) {
+                                if ((input >= 1 && input <= 6 && input.length <= 1) || input === '') {
+                                    setMark(input)
+                                }
+                            } else if(isEnabled1){
+                                if ((input >= 1 && input <= 6 && input.length <= 4) || input === '') {
+                                    setMark(input)
+                                }
+                            } else {
+                                if ((input >= 1 && input <= 6) || input === '') {
+                                    setMark(input)
+                                }
                             }
                         }}
                         value={mark}

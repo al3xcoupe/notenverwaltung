@@ -1,21 +1,9 @@
-import {
-    Text,
-    StyleSheet,
-    View,
-    Switch,
-    Button,
-    SafeAreaView,
-    FlatList,
-    Alert,
-    Pressable,
-    Modal,
-    Image
-} from "react-native";
+import {Button, FlatList, Image, Modal, Pressable, SafeAreaView, StyleSheet, Text, View} from "react-native";
 import {useEffect, useState} from "react";
-import {getNoten, getSemester, getSubject} from "../../database/db";
+import {getNoten} from "../../database/db";
 
 
-const Item = ({ mark, date, weight, subject, title, img}) => {
+const Item = ({mark, date, weight, subject, title, img}) => {
 
     const [isModalVisible, setModalVisible] = useState(false);
 
@@ -39,21 +27,17 @@ const Item = ({ mark, date, weight, subject, title, img}) => {
                         <Text style={styles.testMark}>{mark}</Text>
                     </View>
                 </View>
-                <Modal visible={isModalVisible} onRequestClose={() => { }}>
+                <Modal visible={isModalVisible} onRequestClose={() => {
+                }}>
                     <View style={styles.centeredView}>
                         <Text style={styles.testTitle}>{title}</Text>
                         <Text style={{"marginBottom": 5}}>{'Datum:' + date.toString()}</Text>
                         <Text style={{"marginBottom": 5}}>{'Gewichtung:' + weight.toString()}</Text>
                         <Text style={styles.testMark}>{'Note:' + mark.toString()}</Text>
-
-                        <Text>{img}</Text>
-
-                        { img &&
-                            <Image source={{uri: img}} />                        }
+                        {img && <Image source={{uri: img}} style={{width: 200, height: 200}}/>}
 
 
-
-                        <Button title="Prüfung schliessen" onPress={toggleModal} />
+                        <Button title="Prüfung schliessen" onPress={toggleModal}/>
                     </View>
                 </Modal>
             </Pressable>
@@ -62,15 +46,16 @@ const Item = ({ mark, date, weight, subject, title, img}) => {
     );
 }
 
-const GradeOverview = ({ route, navigation }) => {
+const GradeOverview = ({route, navigation}) => {
 
     const [grades, setGrades] = useState([])
     const {subjectId} = route.params;
 
 
-    const renderItem = ({ item }) => (
+    const renderItem = ({item}) => (
         <View>
-            <Item mark={item.mark} date={item.date} img={item.img} weight={item.weight} subject={item.subject} title={item.label}/>
+            <Item mark={item.mark} date={item.date} img={item.img} weight={item.weight} subject={item.subject}
+                  title={item.label}/>
         </View>
 
     );
@@ -92,7 +77,8 @@ const GradeOverview = ({ route, navigation }) => {
                 weight: semi.val.weight,
                 subject: semi.val.subject,
                 img: semi.val.base64String
-            }})
+            }
+        })
 
         tmpArray = tmpArray.filter(o => o.subject === subjectId)
         setGrades(tmpArray);
@@ -121,7 +107,7 @@ const styles = StyleSheet.create({
     testMark: {
         fontSize: 20,
         fontWeight: "bold",
-        textAlign:'right',
+        textAlign: 'right',
     },
     overViewGrades: {
         flex: 1,
