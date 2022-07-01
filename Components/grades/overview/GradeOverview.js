@@ -1,9 +1,21 @@
-import {Text, StyleSheet, View, Switch, Button, SafeAreaView, FlatList, Alert, Pressable, Modal} from "react-native";
+import {
+    Text,
+    StyleSheet,
+    View,
+    Switch,
+    Button,
+    SafeAreaView,
+    FlatList,
+    Alert,
+    Pressable,
+    Modal,
+    Image
+} from "react-native";
 import {useEffect, useState} from "react";
 import {getNoten, getSemester, getSubject} from "../../database/db";
 
 
-const Item = ({ mark, date, weight, subject, title, onPress, bool}) => {
+const Item = ({ mark, date, weight, subject, title, img}) => {
 
     const [isModalVisible, setModalVisible] = useState(false);
 
@@ -29,10 +41,17 @@ const Item = ({ mark, date, weight, subject, title, onPress, bool}) => {
                 </View>
                 <Modal visible={isModalVisible} onRequestClose={() => { }}>
                     <View style={styles.centeredView}>
-                        <Text>{title}</Text>
-                        <Text>{'Datum:' + date.toString()}</Text>
-                        <Text>{'Note:' + mark.toString()}</Text>
-                        <Text>{'Gewichtung:' + weight.toString()}</Text>
+                        <Text style={styles.testTitle}>{title}</Text>
+                        <Text style={{"marginBottom": 5}}>{'Datum:' + date.toString()}</Text>
+                        <Text style={{"marginBottom": 5}}>{'Gewichtung:' + weight.toString()}</Text>
+                        <Text style={styles.testMark}>{'Note:' + mark.toString()}</Text>
+
+                        <Text>{img}</Text>
+
+                        { img &&
+                            <Image source={{uri: img}} />                        }
+
+
 
                         <Button title="Prüfung schliessen" onPress={toggleModal} />
                     </View>
@@ -51,7 +70,7 @@ const GradeOverview = ({ route, navigation }) => {
 
     const renderItem = ({ item }) => (
         <View>
-            <Item mark={item.mark} date={item.date} weight={item.weight} subject={item.subject} title={item.label}/>
+            <Item mark={item.mark} date={item.date} img={item.img} weight={item.weight} subject={item.subject} title={item.label}/>
         </View>
 
     );
@@ -71,7 +90,8 @@ const GradeOverview = ({ route, navigation }) => {
                 mark: semi.val.mark,
                 date: semi.val.selectedDate,
                 weight: semi.val.weight,
-                subject: semi.val.subject
+                subject: semi.val.subject,
+                img: semi.val.base64String
             }})
 
         tmpArray = tmpArray.filter(o => o.subject === subjectId)
@@ -96,7 +116,7 @@ const styles = StyleSheet.create({
 
     testTitle: {
         fontSize: 20,
-        flex: 1
+        marginBottom: 5
     },
     testMark: {
         fontSize: 20,
