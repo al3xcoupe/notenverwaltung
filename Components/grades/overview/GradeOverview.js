@@ -49,6 +49,7 @@ const Item = ({mark, date, weight, subject, title, img}) => {
 const GradeOverview = ({route, navigation}) => {
 
     const [grades, setGrades] = useState([])
+    const [average, setAverage] = useState(0)
     const {subjectId} = route.params;
 
 
@@ -67,6 +68,7 @@ const GradeOverview = ({route, navigation}) => {
     const mapGrades = (data) => {
 
         let tmpArray = [];
+        let weightedMarks = [];
 
         tmpArray = data.map(semi => {
             return {
@@ -81,6 +83,22 @@ const GradeOverview = ({route, navigation}) => {
         })
 
         tmpArray = tmpArray.filter(o => o.subject === subjectId)
+
+        weightedMarks = tmpArray.map(semi => {
+            return {mark: parseInt(semi.mark), weight: parseInt(semi.weight)}});
+
+        //let average = marks.reduce((a, b) => a + b, 0) / marks.length;
+        let total = 0;
+        let totalWeight = 0;
+        weightedMarks.forEach(obj => {
+            total += obj.mark * obj.weight;
+            totalWeight += obj.weight;
+        })
+
+        let unroundedDecimal = total / totalWeight;
+
+        setAverage(parseFloat(unroundedDecimal.toFixed(2)));
+        setAverage(parseFloat(unroundedDecimal.toFixed(2)));
         setGrades(tmpArray);
     }
 
@@ -93,6 +111,13 @@ const GradeOverview = ({route, navigation}) => {
                 renderItem={renderItem}
                 keyExtractor={item => item.id}
             />
+
+            <View>
+                <Text>{'Durschnitt' + average}</Text>
+            </View>
+
+
+
         </SafeAreaView>
     );
 }
