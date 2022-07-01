@@ -1,16 +1,18 @@
 import React, {useEffect, useState} from 'react';
-import {View, Text, TextInput, StyleSheet, Button, ScrollView} from "react-native";
+import {View, Text, TextInput, StyleSheet, Button, ScrollView, Image} from "react-native";
 import DropDownPicker from "react-native-dropdown-picker";
 import {
     addMark,
-    addNewExpense,
-    addSemester,
-    deleteSemester, getSemester, getSubject,
-    pathes,
+    getSemester, getSubject, pathes as firebasePathes,
     registerObserver,
     unregisterObserver
 } from "../../database/db";
 import DatePicker from "react-native-modern-datepicker";
+import * as ImagePicker from 'expo-image-picker';
+import {getToday} from 'react-native-modern-datepicker';
+import mime from "react-native-mime-types";
+import * as FileSystem from "expo-file-system/build/FileSystem";
+import * as pathe from "path";
 
 export default function NotenForm() {
     const [title, setTitle] = useState();
@@ -22,26 +24,29 @@ export default function NotenForm() {
     const [semesters, setSemesters] = useState([{label: "BMS 21/22", value: "bms21/22"}]) //später mit UseEffect aus Storage fächer hollen
     const [semester, setSemester] = useState(null);
     const [openSemester, setOpenSemester] = useState(false);
-    const [counter ,setCounter] = useState(0);
+    const [counter, setCounter] = useState(0);
 
     const [mark, setMark] = useState(null);
     const [weight, setWeight] = useState('');
 
     const [selectedDate, setSelectedDate] = useState('');
 
-    const [subjectsFromSemester, setSubjectSemester] = useState([])
+    const [subjectsFromSemester, setSubjectSemester] = useState([]);
+
+    const [image, setImage] = useState(null);
+    const [status, requestPermission] = ImagePicker.useCameraPermissions();
 
 
     useEffect(() => {
         getSemester(mapSemesters)
         getSubject(mapSubjects)
 
-        registerObserver(pathes.semester, "noteFormSemester", (data) => {
+        registerObserver(firebasePathes.semester, "noteFormSemester", (data) => {
             console.log("Form Data:" + counter)
         })
 
 
-        return () => unregisterObserver(pathes.semester, "noteFormSemester")
+        return () => unregisterObserver(firebasePathes.semester, "noteFormSemester")
     }, [])
 
     useEffect(() => {
@@ -74,7 +79,7 @@ export default function NotenForm() {
 
         let tmpArray = [];
 
-        if(semester!== null){
+        if (semester !== null) {
             tmpArray = subjects.filter(o => o.semester === semester)
             setSubjectSemester(tmpArray)
         }
@@ -82,19 +87,63 @@ export default function NotenForm() {
 
     }
 
-    const submitData = () => {
+    const submitData = async () => {
+        console.log("Image uRI", image)
+        const uri = image;
+        const mimeType = mime.contentType(pathe.extname(uri));
+        const res = await FileSystem.readAsStringAsync(uri, {encoding: FileSystem.EncodingType.Base64});
+        const base64String = "data:" + mimeType + ";base64," + res;
 
-        const test = {
+        console.log("Bild ", base64String)
+
+        const markToAdd = {
             mark,
             weight,
             selectedDate,
             subject,
-            semester
+            semester,
+            base64String
         }
 
-        addMark(test)
+        addMark(markToAdd)
 
     }
+
+    const pickImage = async () => {
+        // No permissions request is necessary for launching the image library
+        let result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.All,
+            allowsEditing: true,
+            quality: 1,
+        });
+
+        console.log("result ", result);
+        console.log("result uri", result.uri)
+
+        if (!result.cancelled) {
+            console.log("set image uri")
+            setImage(result.uri);
+        }
+    };
+
+    const takeImage = async () => {
+        const {granted} = await requestPermission();
+        console.log(status)
+
+        if (granted) {
+            let result = await ImagePicker.launchCameraAsync({
+                mediaTypes: ImagePicker.MediaTypeOptions.All,
+                allowsEditing: true,
+                quality: 1,
+            });
+
+            console.log(result);
+
+            if (!result.cancelled) {
+                setImage(result.uri);
+            }
+        }
+    };
 
 
     return (
@@ -173,12 +222,27 @@ export default function NotenForm() {
                     <Text>Date: </Text>
                     <DatePicker
                         mode={"calendar"}
+                        selected={getToday()}
                         onSelectedChange={date => setSelectedDate(date)}
                     />
                 </View>
+                <View style={{alignItems: 'center', justifyContent: 'center'}}>
+                    <Button title="Pick an image from camera roll" onPress={pickImage}/>
+                </View>
+                <View style={{marginTop: 15, alignItems: 'center', justifyContent: 'center'}}>
+                    <Button title="Take image with camera" onPress={takeImage}/>
+                </View>
+                {image && <View style={{alignSelf: "center", marginTop: 5}}>
+                    <Image source={{uri: image}} style={{width: 200, height: 200}}/>
+                </View>}
                 <View style={{marginTop: 10}}>
                     <Button
-                        onPress={submitData}
+                        onPress={() => {
+                            console.log("submit")
+                            submitData().then(r => {
+                                console.log("r bei submit: ", r)
+                            })
+                        }}
                         title='Semester speichern'
                         color="#841584"
                     />
