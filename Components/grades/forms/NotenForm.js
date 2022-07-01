@@ -94,9 +94,8 @@ export default function NotenForm() {
         const res = await FileSystem.readAsStringAsync(uri, {encoding: FileSystem.EncodingType.Base64});
         const base64String = "data:" + mimeType + ";base64," + res;
 
-        console.log("Bild ", base64String)
-
         const markToAdd = {
+            title,
             mark,
             weight,
             selectedDate,
@@ -237,12 +236,7 @@ export default function NotenForm() {
                 </View>}
                 <View style={{marginTop: 10}}>
                     <Button
-                        onPress={() => {
-                            console.log("submit")
-                            submitData().then(r => {
-                                console.log("r bei submit: ", r)
-                            })
-                        }}
+                        onPress={submitData}
                         title='Semester speichern'
                         color="#841584"
                     />
