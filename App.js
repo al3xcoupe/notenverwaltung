@@ -5,6 +5,9 @@ import HomeScreen from "./HomeScreen";
 import Setting from "./Components/other/Settings";
 import NotenForm from "./Components/grades/forms/NotenForm";
 import Create from "./Components/grades/forms/Create";
+import SemesterList from "./Components/grades/overview/SemesterList";
+import SubjectList from "./Components/grades/overview/SubjectList";
+import GradeOverview from "./Components/grades/overview/GradeOverview";
 
 
 const Stack = createNativeStackNavigator();
@@ -34,6 +37,21 @@ const App = () => {
                 component={Create}
                 options={{ title: 'Erstellen',  headerTitleAlign: "center" }}
             />
+
+            <Stack.Screen
+                name="SemesterL"
+                component={SemesterList}
+            />
+
+            <Stack.Screen
+                name="SubjectL"
+                component={SubjectList}
+            />
+
+          <Stack.Screen
+              name="GradeList"
+              component={GradeOverview}
+          />
         </Stack.Navigator>
       </NavigationContainer>
   );

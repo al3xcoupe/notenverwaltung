@@ -14,7 +14,7 @@ const DATA = [
     {
         id: '2',
         title: 'Überblick',
-        link: 'Evaluation',
+        link: 'SemesterL',
     },
     {
         id: '3',
@@ -25,7 +25,7 @@ const DATA = [
 
 const Item = ({ title, navigation, link }) => (
     <View style={styles.item}>
-        <Button style={styles.title} onPress={() => navigation.navigate(link)} title={title}></Button>
+        <Button style={styles.title} onPress={() => navigation.navigate(link, {})} title={title}></Button>
     </View>
 );
 

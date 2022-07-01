@@ -1,5 +1,7 @@
 import {Text, StyleSheet, View, Switch, Button} from "react-native";
-import {useState} from "react";
+import {useEffect, useState} from "react";
+import {clearItem, getItem, registerObserver, setItem, unregisterObserver} from "../storage/observableStorageService";
+
 
 const Setting = ({ navigation }) => {
 
@@ -9,6 +11,27 @@ const Setting = ({ navigation }) => {
     const [isEnabled2, setIsEnabled2] = useState(false);
     const toggleSwitch2 = () => setIsEnabled2(previousState => !previousState);
 
+    const [isCalled, setIsCalled] = useState(false);
+
+    useEffect(() => {
+        if(!isCalled) {
+            getItem("@RoundNumber", callback1)
+            getItem("@OnlyWholeNumber", callback2)
+        } else {
+            setItem("@RoundNumber", isEnabled1)
+            setItem("@OnlyWholeNumber", isEnabled2)
+        }
+    }, [isEnabled1, isEnabled2])
+
+    const callback1 = (value) => {
+        setIsEnabled1(value);
+        setIsCalled(true);
+    }
+
+    const callback2 = (value) => {
+        setIsEnabled2(value);
+        setIsCalled(true);
+    }
 
     return (
 
