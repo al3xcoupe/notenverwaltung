@@ -28,6 +28,8 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "description": "Notenverwaltung App ",
+    "githubUrl": "https://github.com/alexandemargra/notenverwaltung"
   }
 }
